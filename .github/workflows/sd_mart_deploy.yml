@@ -6,31 +6,23 @@ on:
       - main  # deploy every time main branch is updated
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v1
 
-      - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           # These three lines must align perfectly
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.eu-north-1 }} # Ensure this uses 2 spaces before 'aws'
+          aws-region: eu-north-1
 
       - name: 3. Deploy files to S3 (Sync)
-        uses: aws-actions/aws-cli@v1 
-        with:
-          args: |
-            # CRITICAL: Use the secret for the bucket name
-            s3 sync . s3://${{ secrets.sd-mart-bucket }} \
-            --delete \
-            --acl public-read \
-            --exclude '.git/*' \
-            --exclude '.github/*'
+        run: aws s3 sync . s3://sd-mart-bucket --delete
+        
 
-      - name: 4. Deployment Success Message
-        run: echo "SD Mart website deployed! Check your S3 Static Website Endpoint."
+      
