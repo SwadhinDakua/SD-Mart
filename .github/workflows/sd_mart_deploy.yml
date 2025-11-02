@@ -18,8 +18,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.eu-north-1 }}  # change to your region
+          aws-region: {{ secrets.AWS_REGION }}  # change to your region
 
-      - name: Sync files to S3
-        run: |
-          aws s3 sync . s3://sd-mart-bucket --delete --exclude ".git/*" --exclude ".github/*"
+      - name: 3. Deploy files to S3 (Sync)
+        uses: aws-actions/aws-cli@v1 
+        with:
+          args: |
+            # CRITICAL: Use the secret for the bucket name
+            s3 sync . s3://${{ secrets.sd-mart-bucket }} \
+            --delete \
+            --acl public-read \
+            --exclude '.git/*' \
+            --exclude '.github/*'
+
+      - name: 4. Deployment Success Message
+        run: echo "SD Mart website deployed! Check your S3 Static Website Endpoint."
