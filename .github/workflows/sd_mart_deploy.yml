@@ -16,9 +16,10 @@ jobs:
       - name: Setup AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          # These three lines must align perfectly
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: {{ secrets.AWS_REGION }}  # change to your region
+          aws-region: ${{ secrets.AWS_REGION }} # Ensure this uses 2 spaces before 'aws'
 
       - name: 3. Deploy files to S3 (Sync)
         uses: aws-actions/aws-cli@v1 
