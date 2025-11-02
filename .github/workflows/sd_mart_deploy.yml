@@ -19,14 +19,14 @@ jobs:
           # These three lines must align perfectly
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }} # Ensure this uses 2 spaces before 'aws'
+          aws-region: ${{ secrets.eu-north-1 }} # Ensure this uses 2 spaces before 'aws'
 
       - name: 3. Deploy files to S3 (Sync)
         uses: aws-actions/aws-cli@v1 
         with:
           args: |
             # CRITICAL: Use the secret for the bucket name
-            s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} \
+            s3 sync . s3://${{ secrets.sd-mart-bucket }} \
             --delete \
             --acl public-read \
             --exclude '.git/*' \
